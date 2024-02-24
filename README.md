@@ -1,7 +1,7 @@
-<H3>Enter Name</H3>
-<H3>Enter Register No.</H3>
+<H3>Enter Name:Aruru Sai Bandhavi</H3>
+<H3>Enter Register No: 212221240006</H3>
 <H3>Experiment 2</H3>
-<H3>Date</H3>
+<H3>Date:24-02-2024</H3>
 <h1 align =center>Implementation of Exact Inference Method of Bayesian Network</h1>
 
 ## Aim:
@@ -18,11 +18,32 @@ Step 6: Perform exact inference using the defined evidence and query variables.<
 Step 7: Print the results.<br>
 
 ## Program :
-<Type your Code here>
+```
+import numpy as np
+from sklearn.datasets import load_iris
+from sklearn.model_selection import train_test_split
+from sklearn.naive_bayes import GaussianNB
+from sklearn.metrics import accuracy_score
+class BayesClassifier:
+  def __init__(self):
+    self.clf = GaussianNB()
+  def fit(self, X, y):
+    self.clf.fit(X, y)
+  def predict(self, X):
+    return self.clf.predict(X)
+ir = load_iris()
+X_train, X_test, y_train, y_test = train_test_split(ir.data, ir.target,test_size=0.33, random_state = 33)
+clf = BayesClassifier()
+clf.fit(X_train, y_train)
+y_pred = clf.predict(X_test)
+accu = accuracy_score(y_test, y_pred)
+print("Accuracy:",accu*100)
+```
 
 
 ## Output :
-<Show the results>
+![image](https://github.com/Saibandhavi75/Ex2---AAI/assets/94208895/d359f6f0-cc6d-4e99-9211-f901126f861d)
+
 
 ## Result :
 Thus, Bayesian Inference was successfully determined using Variable Elimination Method
