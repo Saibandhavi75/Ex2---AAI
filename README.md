@@ -1,7 +1,7 @@
 <H3>Name:Aruru Sai Bandhavi</H3>
 <H3>Register No: 212221240006</H3>
 <H3>Experiment 2</H3>
-<H3>Date:24-02-2024</H3>
+<H3>Date:27-02-2024</H3>
 <h1 align =center>Implementation of Exact Inference Method of Bayesian Network</h1>
 
 ## Aim:
@@ -19,30 +19,54 @@ Step 7: Print the results.<br>
 
 ## Program :
 ```
-import numpy as np
-from sklearn.datasets import load_iris
-from sklearn.model_selection import train_test_split
-from sklearn.naive_bayes import GaussianNB
-from sklearn.metrics import accuracy_score
-class BayesClassifier:
-  def __init__(self):
-    self.clf = GaussianNB()
-  def fit(self, X, y):
-    self.clf.fit(X, y)
-  def predict(self, X):
-    return self.clf.predict(X)
-ir = load_iris()
-X_train, X_test, y_train, y_test = train_test_split(ir.data, ir.target,test_size=0.33, random_state = 33)
-clf = BayesClassifier()
-clf.fit(X_train, y_train)
-y_pred = clf.predict(X_test)
-accu = accuracy_score(y_test, y_pred)
-print("Accuracy:",accu*100)
+!pip install pgmpy
+
+from pgmpy.models import BayesianNetwork
+from pgmpy.factors.discrete import TabularCPD
+from pgmpy.inference import VariableElimination
+
+# Define the network structure
+network = BayesianNetwork([('Burglary', 'Alarm'),
+                           ('Earthquake', 'Alarm'),
+                           ('Alarm', 'JohnCalls'),
+                           ('Alarm', 'MaryCalls')])
+
+# Define the Conditional Probability Distributions (CPDs)
+cpd_burglary = TabularCPD(variable='Burglary', variable_card=2, values=[[0.999], [0.001]])
+cpd_earthquake = TabularCPD(variable='Earthquake', variable_card=2, values=[[0.998], [0.002]])
+cpd_alarm = TabularCPD(variable='Alarm', variable_card=2,
+                       values=[[0.999, 0.71, 0.06, 0.05],
+                               [0.001, 0.29, 0.94, 0.95]],
+                       evidence=['Burglary', 'Earthquake'],
+                       evidence_card=[2, 2])
+cpd_john_calls = TabularCPD(variable='JohnCalls', variable_card=2,
+                             values=[[0.95, 0.1],
+                                     [0.05, 0.9]],
+                             evidence=['Alarm'],
+                             evidence_card=[2])
+cpd_mary_calls = TabularCPD(variable='MaryCalls', variable_card=2,
+                             values=[[0.99, 0.01],
+                                     [0.01, 0.99]],
+                             evidence=['Alarm'],
+                             evidence_card=[2])
+
+# Add CPDs to the network
+network.add_cpds(cpd_burglary, cpd_earthquake, cpd_alarm, cpd_john_calls, cpd_mary_calls)
+
+# Initialize the inference engine
+inference = VariableElimination(network)
+
+# Perform exact inference
+evidence = {'JohnCalls': 1, 'MaryCalls': 0} 
+query_variable = 'Burglary'
+
+result = inference.query(variables=[query_variable], evidence=evidence)
+print(result)
 ```
 
 
 ## Output :
-![image](https://github.com/Saibandhavi75/Ex2---AAI/assets/94208895/d359f6f0-cc6d-4e99-9211-f901126f861d)
+![image](https://github.com/Saibandhavi75/Ex2---AAI/assets/94208895/ebe29484-79e0-410b-846e-90b469c7c3ae)
 
 
 ## Result :
